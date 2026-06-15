@@ -80,6 +80,68 @@
   }
 
   /* ===========================================================
+     PERSISTÊNCIA DE PROGRESSO (LOCALSTORAGE)
+  =========================================================== */
+  const PROGRESS_KEY = 'minutoSagradoData';
+
+  function saveProgress(){
+    try{
+      const data = {
+        stats: {
+          totalAnswered: stats.totalAnswered,
+          totalCorrect: stats.totalCorrect,
+          bestStreak: stats.bestStreak,
+          antigoCount: stats.antigoCount,
+          novoCount: stats.novoCount,
+          antigoCorrect: stats.antigoCorrect,
+          novoCorrect: stats.novoCorrect,
+          categoriesPlayed: Array.from(stats.categoriesPlayed)
+        },
+        achievements: ACHIEVEMENTS.map(cat => cat.items.map(it => ({ unlocked: it.unlocked, notified: it.notified }))),
+        jornada: JORNADA_MODULES.map(m => ({ desbloqueado: m.desbloqueado, respondidas: m.respondidas }))
+      };
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+    }catch(err){
+      /* localStorage indisponível (ex.: modo privado) — progresso fica só na sessão */
+    }
+  }
+
+  function loadProgress(){
+    try{
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if(!raw) return;
+      const data = JSON.parse(raw);
+
+      if(data.stats){
+        Object.assign(stats, data.stats);
+        stats.categoriesPlayed = new Set(data.stats.categoriesPlayed || []);
+      }
+      if(Array.isArray(data.achievements)){
+        data.achievements.forEach((catData, catIdx) => {
+          const category = ACHIEVEMENTS[catIdx];
+          if(!category) return;
+          catData.forEach((itData, itemIdx) => {
+            const item = category.items[itemIdx];
+            if(!item) return;
+            item.unlocked = !!itData.unlocked;
+            item.notified = !!itData.notified;
+          });
+        });
+      }
+      if(Array.isArray(data.jornada)){
+        data.jornada.forEach((modData, idx) => {
+          const module = JORNADA_MODULES[idx];
+          if(!module) return;
+          module.desbloqueado = !!modData.desbloqueado;
+          module.respondidas = modData.respondidas || 0;
+        });
+      }
+    }catch(err){
+      /* dados corrompidos ou indisponíveis — mantém o estado inicial */
+    }
+  }
+
+  /* ===========================================================
      NAVEGAÇÃO ENTRE TELAS
   =========================================================== */
   function showScreen(id){
@@ -528,6 +590,7 @@
     }
     if(state.mode) stats.categoriesPlayed.add(state.mode);
     checkAchievements();
+    saveProgress();
   }
 
   function renderFeedback(correct, item, breakdown){
@@ -643,6 +706,7 @@
     module.respondidas = getRoundItems().length;
     const nextModule = JORNADA_MODULES[state.jornadaModuleIndex + 1];
     if(nextModule) nextModule.desbloqueado = true;
+    saveProgress();
     const unlockMsg = nextModule
       ? `<p>A etapa <strong>${nextModule.titulo}</strong> foi desbloqueada na jornada.</p>`
       : `<p>Você concluiu todas as etapas disponíveis da jornada!</p>`;
@@ -906,12 +970,12 @@
 
   function renderFeedInspiracaoCards(){
     const visiveis = feedInspiracaoAtual.slice(0, feedInspiracaoVisivel);
-    const cardsHtml = visiveis.map((item, idx) => `
+    const cardsHtml = visiveis.map(item => `
       <div class="feed-card">
         <div class="item-tag">${item.categoria}</div>
         <p class="item-text">"${item.texto}"</p>
         <p class="item-ref">${item.referencia}</p>
-        <button class="feed-share-btn" onclick="shareFeedArte(${idx})">✨ Gerar e Compartilhar Arte</button>
+        <button class="feed-share-btn" onclick="shareFeedArte(${item.id})">📥 Compartilhar Arte</button>
       </div>
     `).join('');
     const loadMoreHtml = feedInspiracaoVisivel < feedInspiracaoAtual.length
@@ -925,27 +989,34 @@
     renderFeedInspiracaoCards();
   }
 
-  function shareFeedArte(idx){
-    const item = feedInspiracaoAtual[idx];
+  async function shareFeedArte(id){
+    const item = inspiracoes.find(i => i.id === id);
+    if(!item) return;
+
     document.getElementById('arte-tag').textContent = item.categoria;
     document.getElementById('arte-texto').textContent = '"' + item.texto + '"';
     document.getElementById('arte-ref').textContent = '— ' + item.referencia;
 
     const node = document.getElementById('arte-compartilhavel');
-    html2canvas(node, { scale: 2, backgroundColor: null }).then(canvas => {
-      const blob = dataURLtoBlob(canvas.toDataURL('image/png'));
-      const file = new File([blob], 'minuto-sagrado.png', { type: 'image/png' });
-      const text = '"' + item.texto + '"' + ' — ' + item.referencia + '\n\nVeja esta mensagem inspiradora do Minuto Sagrado! Jogue agora: https://www.minutosagrado.com.br';
+    const canvas = await html2canvas(node, { scale: 2, backgroundColor: null, useCORS: true });
+    const blob = dataURLtoBlob(canvas.toDataURL('image/png'));
+    const file = new File([blob], 'minuto-sagrado.png', { type: 'image/png' });
+    const text = '"' + item.texto + '"' + ' — ' + item.referencia + '\n\nVeja esta mensagem inspiradora do Minuto Sagrado! Jogue agora: https://www.minutosagrado.com.br';
 
-      if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
-        navigator.share({ files: [file], title: 'Minuto Sagrado', text }).catch(() => {});
-      } else {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'minuto-sagrado.png';
-        link.click();
+    if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
+      try{
+        await navigator.share({ files: [file], title: 'Minuto Sagrado', text });
+        return;
+      }catch(err){
+        if(err.name === 'AbortError') return;
       }
-    });
+    }
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'minuto-sagrado.png';
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
 
   /* ===========================================================
@@ -1006,6 +1077,7 @@
 
       if(document.getElementById('achievements-content')) renderAchievements();
       renderStats();
+      saveProgress();
 
       alert('Todo o progresso do Minuto Sagrado foi reiniciado!');
     }
@@ -1433,7 +1505,7 @@
   /* ===========================================================
      PAINEL DO CURADOR (ADMIN)
   =========================================================== */
-  const ADMIN_PASSWORD = 'sagrado2026';
+  const ADMIN_PASSWORD = 'MS#Curador_2026!';
   let adminAuthenticated = false;
   let adminEditingId = null;
   const ALT_LETTERS = ['A','B','C','D','E'];
@@ -1772,6 +1844,7 @@
   /* ===========================================================
      INICIALIZAÇÃO
   =========================================================== */
+  loadProgress();
   stats.dayStreak = computeDayStreak();
   renderFeedInspiracao();
   renderModeBadges();
