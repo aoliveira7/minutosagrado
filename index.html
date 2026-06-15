@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Minuto Sagrado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@700;800;900&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.min.css">
+</head>
+<body>
+<div class="stars"></div>
+<div class="app">
+
+  <div id="dashboard" class="screen active">
+
+    <div class="header">
+      <div class="header-logo-wrap">
+        <img src="assets/logo.png" alt="Minuto Sagrado" class="header-logo" onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    <div class="section-title first">Modos Clássicos</div>
+
+    <div class="classic-card" onclick="openJourney()">
+      <div class="card-top">
+        <div class="card-icon icon-emoji">🗺️</div>
+        <div class="card-info">
+          <h3>Jornada Cronológica</h3>
+          <p>Atravesse a história sagrada em ordem, do Gênesis ao Apocalipse.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-jornada">-- perguntas</span>
+          <span class="badge" id="badge-timer-jornada">--s</span>
+          <span class="badge total-badge" id="badge-total-jornada">-- total</span>
+        </div>
+        <button class="zerar-btn" onclick="resetProgress(event,'Jornada Cronológica')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
+          Zerar
+        </button>
+      </div>
+    </div>
+
+    <div class="classic-card" onclick="openMode('quiz')">
+      <div class="card-top">
+        <div class="card-icon icon-emoji">📖</div>
+        <div class="card-info">
+          <h3>Quiz Diário</h3>
+          <p>Dez perguntas selecionadas especialmente para o dia de hoje.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-quiz">-- perguntas</span>
+          <span class="badge" id="badge-timer-quiz">--s</span>
+          <span class="badge total-badge" id="badge-total-quiz">-- total</span>
+        </div>
+        <button class="zerar-btn" onclick="resetProgress(event,'Quiz Diário')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
+          Zerar
+        </button>
+      </div>
+    </div>
+
+    <div class="classic-card" onclick="openMode('characters')">
+      <div class="card-top">
+        <div class="card-icon icon-emoji">📜</div>
+        <div class="card-info">
+          <h3>Modo Personagens</h3>
+          <p>Conheça as biografias de Davi, Ester, Paulo, Noé e muito mais.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-characters">-- perguntas</span>
+          <span class="badge" id="badge-timer-characters">--s</span>
+          <span class="badge total-badge" id="badge-total-characters">-- total</span>
+        </div>
+        <button class="zerar-btn" onclick="resetProgress(event,'Modo Personagens')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
+          Zerar
+        </button>
+      </div>
+    </div>
+
+    <div class="classic-card" onclick="openMode('truefalse')">
+      <div class="card-top">
+        <div class="card-icon icon-emoji">⚖️</div>
+        <div class="card-info">
+          <h3>Verdadeiro ou Falso</h3>
+          <p>Desafie sua percepção com afirmações rápidas sobre as escrituras.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-truefalse">-- perguntas</span>
+          <span class="badge" id="badge-timer-truefalse">--s</span>
+          <span class="badge total-badge" id="badge-total-truefalse">-- total</span>
+        </div>
+        <button class="zerar-btn" onclick="resetProgress(event,'Verdadeiro ou Falso')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
+          Zerar
+        </button>
+      </div>
+    </div>
+
+    <div class="classic-card" onclick="openMode('theological')">
+      <div class="card-top">
+        <div class="card-icon icon-emoji">🧠</div>
+        <div class="card-info">
+          <h3>Desafio Teológico</h3>
+          <p>Teste seus conhecimentos em doutrina, história e teologia avançada.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-theological">-- perguntas</span>
+          <span class="badge" id="badge-timer-theological">--s</span>
+          <span class="badge total-badge" id="badge-total-theological">-- total</span>
+        </div>
+        <button class="zerar-btn" onclick="resetProgress(event,'Desafio Teológico')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
+          Zerar
+        </button>
+      </div>
+    </div>
+
+    <div class="section-title">Modo Kids</div>
+
+    <div class="kids-card" onclick="openMode('kids')">
+      <div class="kids-card-top">
+        <div class="icon icon-emoji">🧸</div>
+        <div class="info">
+          <h3>Modo Kids</h3>
+          <p>Histórias e perguntas adaptadas para os pequenos exploradores da fé.</p>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="badges-row">
+          <span class="badge" id="badge-round-kids">-- perguntas</span>
+          <span class="badge" id="badge-timer-kids">--s</span>
+          <span class="badge total-badge" id="badge-total-kids">-- total</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <div class="action-btn" onclick="openStats()">
+        <span class="icon-big">📊</span>
+        Minhas Estatísticas
+      </div>
+      <div class="action-btn" onclick="openAchievements()">
+        <span class="icon-big">🏆</span>
+        Conquistas
+      </div>
+    </div>
+
+    <button class="reset-all-btn" onclick="resetAllGame()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78A1.5 1.5 0 0 0 22.18 18L13.71 3.86a1.5 1.5 0 0 0-2.42 0z"/></svg>
+      Zerar Todo o Jogo
+    </button>
+
+    <div class="section-title">Modos Especiais</div>
+
+    <div class="special-grid">
+      <div class="special-card" onclick="openMode('hardchoices')">
+        <div class="icon icon-emoji">🛤️</div>
+        <h3>ESCOLHAS DIFÍCEIS</h3>
+        <p>Decida em cenários bíblicos reais e veja como outros jogadores decidiram. 10 dilemas disponíveis.</p>
+        <div class="card-footer">
+          <div class="badges-row">
+            <span class="badge" id="badge-round-hardchoices">-- perguntas</span>
+            <span class="badge" id="badge-timer-hardchoices">--s</span>
+            <span class="badge total-badge" id="badge-total-hardchoices">-- total</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="special-card" onclick="openMode('connections')">
+        <div class="icon icon-emoji">🔗</div>
+        <h3>CONEXÕES</h3>
+        <p>Descubra o vínculo lógico entre as quatro palavras sagradas.</p>
+        <div class="card-footer">
+          <div class="badges-row">
+            <span class="badge" id="badge-round-connections">-- perguntas</span>
+            <span class="badge" id="badge-timer-connections">--s</span>
+            <span class="badge total-badge" id="badge-total-connections">-- total</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="special-card" onclick="openMode('enigma')">
+        <div class="icon icon-emoji">🧩</div>
+        <h3>ENIGMA</h3>
+        <p>Complete a lacuna do versículo sagrado. Dez enigmas diários para decifrar.</p>
+        <div class="card-footer">
+          <div class="badges-row">
+            <span class="badge" id="badge-round-enigma">-- perguntas</span>
+            <span class="badge" id="badge-timer-enigma">--s</span>
+            <span class="badge total-badge" id="badge-total-enigma">-- total</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Feed de Inspiração</div>
+
+    <div class="feed-inspiracao" id="feed-inspiracao"></div>
+
+    <div class="app-footer">
+      <button class="admin-link" onclick="openAdminPanel()">Painel do Adm</button>
+    </div>
+
+    <button class="invite-fab" onclick="shareGameInvite()" aria-label="Desafiar amigo para o Minuto Sagrado">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-3.8M8.6 13.4l6.8 3.8"/></svg>
+      Desafie um Amigo
+    </button>
+
+  </div>
+
+  <div id="game-screen" class="screen">
+    <button class="back-btn" onclick="goBackToMenu()">← Voltar ao Menu</button>
+    <div id="game-content"></div>
+  </div>
+
+  <div id="achievements-screen" class="screen">
+    <button class="back-btn" onclick="goBackToMenu()">← Voltar ao Menu</button>
+    <div id="achievements-content"></div>
+  </div>
+
+</div>
+
+<div id="overlay" class="overlay" onclick="closeAllSheets()"></div>
+
+<div id="share-sheet" class="bottom-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="share-sheet-title">Compartilhar</div>
+  <div class="share-preview" id="share-preview">
+    <div class="preview-tag" id="preview-tag">Minuto Sagrado</div>
+    <p class="preview-text" id="preview-text"></p>
+    <div class="preview-watermark">MINUTO SAGRADO · www.minutosagrado.com</div>
+  </div>
+  <div id="art-preview"></div>
+  <button class="art-btn" onclick="generateArt()">🎨 Gerar e Compartilhar Arte</button>
+  <div class="share-options">
+    <button class="share-option" onclick="shareTo('Instagram')">
+      <span class="share-icon" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">📷</span>
+      Instagram
+    </button>
+    <button class="share-option" onclick="shareTo('WhatsApp')">
+      <span class="share-icon" style="background:#25D366;">💬</span>
+      WhatsApp
+    </button>
+    <button class="share-option" onclick="shareTo('Facebook')">
+      <span class="share-icon" style="background:#1877F2;">📘</span>
+      Facebook
+    </button>
+    <button class="share-option" onclick="shareTo('X')">
+      <span class="share-icon" style="background:#0f1419;">✕</span>
+      X
+    </button>
+  </div>
+  <button class="sheet-close" onclick="closeAllSheets()">Cancelar</button>
+</div>
+
+<div id="admin-sheet" class="bottom-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Painel do Adm</div>
+
+  <div id="admin-dashboard">
+    <input type="text" class="admin-search" id="admin-search" placeholder="Buscar por pergunta ou referência..." oninput="renderAdminList()">
+    <div class="admin-filters">
+      <select class="admin-filter-select" id="admin-filter-categoria" onchange="renderAdminList()">
+        <option value="">Todas Categorias</option>
+        <option value="quiz">Quiz Diário</option>
+        <option value="characters">Modo Personagens</option>
+        <option value="truefalse">Verdadeiro ou Falso</option>
+        <option value="theological">Desafio Teológico</option>
+        <option value="kids">Modo Kids</option>
+        <option value="connections">Conexões</option>
+        <option value="enigma">Enigma</option>
+        <option value="Jardim do Éden">Jornada: Jardim do Éden</option>
+        <option value="Êxodo Sagrado">Jornada: Êxodo Sagrado</option>
+        <option value="Era dos Reis">Jornada: Era dos Reis</option>
+        <option value="Vida de Jesus">Jornada: Vida de Jesus</option>
+        <option value="Atos dos Apóstolos">Jornada: Atos dos Apóstolos</option>
+      </select>
+      <select class="admin-filter-select" id="admin-filter-dificuldade" onchange="renderAdminList()">
+        <option value="">Todas Dificuldades</option>
+        <option value="Facil">Fácil</option>
+        <option value="Medio">Médio</option>
+        <option value="Dificil">Difícil</option>
+      </select>
+    </div>
+    <div class="admin-list" id="admin-list"></div>
+    <button class="admin-add-btn" onclick="adminOpenForm()">+ Adicionar Nova Pergunta</button>
+  </div>
+
+  <div id="admin-form-area"></div>
+
+  <button class="sheet-close" onclick="closeAllSheets()">Fechar</button>
+</div>
+
+<div id="stats-sheet" class="bottom-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Minhas Estatísticas</div>
+
+  <div class="stats-circle-wrap">
+    <div class="stats-circle">
+      <svg viewBox="0 0 120 120">
+        <circle class="circle-bg" cx="60" cy="60" r="52"></circle>
+        <circle class="circle-fg" id="accuracy-circle" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="stats-circle-label">
+        <span id="stat-accuracy">0%</span>
+        <small>Taxa de Acerto</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="testament-bars">
+    <div class="testament-bar-row">
+      <div class="testament-bar-label"><span>Antigo Testamento</span><span id="stat-antigo-pct">0%</span></div>
+      <div class="testament-bar-track"><div class="testament-bar-fill antigo" id="stat-antigo-bar" style="width:0%"></div></div>
+    </div>
+    <div class="testament-bar-row">
+      <div class="testament-bar-label"><span>Novo Testamento</span><span id="stat-novo-pct">0%</span></div>
+      <div class="testament-bar-track"><div class="testament-bar-fill novo" id="stat-novo-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="stat-row"><span class="stat-label">Total de Perguntas</span><span class="stat-value" id="stat-total">0</span></div>
+  <div class="stat-row"><span class="stat-label">Respostas Corretas</span><span class="stat-value" id="stat-correct">0</span></div>
+  <div class="stat-row"><span class="stat-label">Streak Máximo</span><span class="stat-value" id="stat-streak">0</span></div>
+  <div class="stat-row"><span class="stat-label">Categorias Exploradas</span><span class="stat-value" id="stat-categories">0/8</span></div>
+  <div class="stat-row"><span class="stat-label">Sequência de Dias Jogando</span><span class="stat-value" id="stat-daystreak">0</span></div>
+
+  <button class="share-achievements-btn" onclick="shareStatsNative()">✨ Compartilhar Estatísticas</button>
+  <button class="sheet-close" onclick="closeAllSheets()">Fechar</button>
+</div>
+
+<div id="achievement-modal-overlay" class="achievement-modal-overlay">
+  <div class="achievement-modal">
+    <div class="achievement-modal-icon">🏆</div>
+    <h3>Conquista Desbloqueada!</h3>
+    <p id="achievement-modal-text"></p>
+    <button class="continue-btn" onclick="closeAchievementModal()">Continuar</button>
+  </div>
+</div>
+
+<div id="arte-compartilhavel" class="arte-compartilhavel">
+  <div class="arte-header">
+    <img src="assets/logo.png" alt="" class="arte-logo" onerror="this.style.display='none'">
+    <span class="arte-brand">MINUTO SAGRADO</span>
+  </div>
+  <div class="arte-body">
+    <div class="arte-tag" id="arte-tag">Versículo</div>
+    <p class="arte-texto" id="arte-texto"></p>
+    <p class="arte-ref" id="arte-ref"></p>
+  </div>
+  <div class="arte-footer">www.minutosagrado.com.br</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="./js/script.min.js"></script>
+</body>
+</html>
