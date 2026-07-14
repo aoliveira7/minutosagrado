@@ -331,7 +331,7 @@
   </div>
 
   <div id="admin-form-area"></div>
-
+<button class="admin-logout-btn" onclick="adminLogout()">Sair da conta admin</button>
   <button class="sheet-close" onclick="closeAllSheets()">Fechar</button>
 </div>
 
@@ -396,5 +396,121 @@
 </div>
 
 <script src="./js/script.min.js"></script>
+  <!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyBS•••••••••••••••••••••••••••••••",
+    authDomain: "minuto-sagrado-26867.firebaseapp.com",
+    projectId: "minuto-sagrado-26867",
+    storageBucket: "minuto-sagrado-26867.firebasestorage.app",
+    messagingSenderId: "107566813206",
+    appId: "1:107566813206:web:0ccb5d56696db393cb2537"
+  });
+
+  function openAdminPanel(){
+    if(firebase.auth().currentUser){ _showAdminSheet(); return; }
+    _showAdminLoginModal();
+  }
+  function _showAdminLoginModal(){
+    let m = document.getElementById('admin-login-modal');
+    if(!m){
+      m = document.createElement('div');
+      m.id = 'admin-login-modal';
+      m.className = 'admin-login-overlay';
+      m.innerHTML = `
+        <div class="admin-login-box">
+          <h3 class="admin-login-title">Acesso Restrito</h3>
+          <p class="admin-login-sub">Entre com suas credenciais de administrador.</p>
+          <input type="email" id="adm-email" class="admin-login-input" placeholder="E-mail">
+          <input type="password" id="adm-pw" class="admin-login-input" placeholder="Senha">
+          <div id="adm-error" class="admin-login-error"></div>
+          <button class="admin-login-btn" onclick="doAdminLogin()">Entrar</button>
+          <button class="admin-login-cancel" onclick="closeAdminLogin()">Cancelar</button>
+        </div>`;
+      document.body.appendChild(m);
+    }
+    m.style.display = 'flex';
+    document.getElementById('adm-email').focus();
+  }
+  function closeAdminLogin(){
+    const m = document.getElementById('admin-login-modal');
+    if(m) m.style.display = 'none';
+  }
+  async function doAdminLogin(){
+    const email = document.getElementById('adm-email').value.trim();
+    const pw    = document.getElementById('adm-pw').value;
+    const err   = document.getElementById('adm-error');
+    const btn   = document.querySelector('.admin-login-btn');
+    err.textContent = '';
+    if(!email || !pw){ err.textContent = 'Preencha e-mail e senha.'; return; }
+    btn.textContent = 'Entrando...';
+    btn.disabled = true;
+    try{
+      await firebase.auth().signInWithEmailAndPassword(email, pw);
+      closeAdminLogin();
+      _showAdminSheet();
+    }catch(e){
+      err.textContent = 'E-mail ou senha incorretos.';
+      btn.textContent = 'Entrar';
+      btn.disabled = false;
+    }
+  }
+  function _showAdminSheet(){
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('admin-sheet').classList.add('open');
+    renderAdminList();
+  }
+  function adminLogout(){
+    firebase.auth().signOut();
+    closeAllSheets();
+  }
+</script>
+
+<style>
+  .admin-login-overlay{
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.85); z-index:1000;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .admin-login-box{
+    background:#1a2234; border:1px solid rgba(214,196,150,0.2);
+    border-radius:20px; padding:32px 24px; width:100%; max-width:340px;
+  }
+  .admin-login-title{
+    font-family:'Montserrat',sans-serif; font-size:1.1rem;
+    font-weight:800; color:#fff; margin:0 0 6px; text-align:center;
+  }
+  .admin-login-sub{
+    font-size:0.78rem; color:rgba(255,255,255,0.55);
+    margin:0 0 20px; text-align:center;
+  }
+  .admin-login-input{
+    width:100%; box-sizing:border-box;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(214,196,150,0.2);
+    border-radius:12px; color:#fff; padding:12px 14px;
+    font-size:0.85rem; font-family:'Inter',sans-serif;
+    margin-bottom:10px; display:block;
+  }
+  .admin-login-input::placeholder{ color:rgba(255,255,255,0.35); }
+  .admin-login-error{ color:#ff6b6b; font-size:0.75rem; margin-bottom:10px; min-height:18px; }
+  .admin-login-btn{
+    width:100%; background:#5b8cff; border:none; border-radius:12px;
+    color:#fff; padding:13px; font-size:0.88rem; font-weight:700;
+    font-family:'Inter',sans-serif; cursor:pointer; margin-bottom:8px;
+  }
+  .admin-login-btn:disabled{ opacity:0.6; cursor:default; }
+  .admin-login-cancel{
+    width:100%; background:transparent; border:1px solid rgba(255,255,255,0.15);
+    border-radius:12px; color:rgba(255,255,255,0.6); padding:12px;
+    font-size:0.85rem; font-family:'Inter',sans-serif; cursor:pointer;
+  }
+  .admin-logout-btn{
+    width:100%; background:transparent; border:1px solid rgba(255,107,107,0.4);
+    border-radius:12px; color:#ff6b6b; padding:11px; font-size:0.82rem;
+    font-family:'Inter',sans-serif; cursor:pointer; margin-bottom:8px;
+  }
+</style>
 </body>
 </html>
