@@ -458,9 +458,17 @@
     }
   }
   function _showAdminSheet(){
-    document.getElementById('overlay').classList.add('active');
-    document.getElementById('admin-sheet').classList.add('open');
-    renderAdminList();
+  const overlay = document.getElementById('overlay');
+  const sheet = document.getElementById('admin-sheet');
+  if(overlay) overlay.classList.add('active');
+  if(sheet){
+    sheet.classList.add('open');
+    sheet.style.setProperty('transform','translateY(0)','important');
+    sheet.style.setProperty('visibility','visible','important');
+    sheet.style.setProperty('display','block','important');
+  }
+  if(typeof renderAdminList === 'function') renderAdminList();
+}
   }
   function adminLogout(){
     firebase.auth().signOut();
