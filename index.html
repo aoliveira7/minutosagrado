@@ -449,8 +449,14 @@
     btn.disabled = true;
     try{
       await firebase.auth().signInWithEmailAndPassword(email, pw);
-      closeAdminLogin();
-      _showAdminSheet();
+      const m = document.getElementById('admin-login-modal');
+      if(m) m.remove();
+      document.getElementById('overlay').classList.remove('active');
+      setTimeout(function(){
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('admin-sheet').classList.add('open');
+        renderAdminList();
+      }, 150);
     }catch(e){
       err.textContent = 'E-mail ou senha incorretos.';
       btn.textContent = 'Entrar';
