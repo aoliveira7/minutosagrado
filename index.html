@@ -464,12 +464,13 @@
     }
   }
 
-  function _showAdminSheet(){
+   function _showAdminSheet(){
+    closeAllSheets();
     document.getElementById('overlay').classList.add('active');
-    document.getElementById('admin-sheet').classList.add('open');
+    document.getElementById('admin-sheet').classList.add('active');
+    try{ adminCloseForm(); }catch(e){}
     try{ renderAdminList(); }catch(e){}
   }
-
   function adminLogout(){
     firebase.auth().signOut();
     closeAllSheets();
