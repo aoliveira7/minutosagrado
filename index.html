@@ -413,55 +413,63 @@
     if(firebase.auth().currentUser){ _showAdminSheet(); return; }
     _showAdminLoginModal();
   }
+
   function _showAdminLoginModal(){
-    let m = document.getElementById('admin-login-modal');
+    var m = document.getElementById('admin-login-modal');
     if(!m){
       m = document.createElement('div');
       m.id = 'admin-login-modal';
       m.className = 'admin-login-overlay';
-      m.innerHTML = `
-        <div class="admin-login-box">
-          <h3 class="admin-login-title">Acesso Restrito</h3>
-          <p class="admin-login-sub">Entre com suas credenciais de administrador.</p>
-          <input type="email" id="adm-email" class="admin-login-input" placeholder="E-mail">
-          <input type="password" id="adm-pw" class="admin-login-input" placeholder="Senha">
-          <div id="adm-error" class="admin-login-error"></div>
-          <button class="admin-login-btn" onclick="doAdminLogin()">Entrar</button>
-          <button class="admin-login-cancel" onclick="closeAdminLogin()">Cancelar</button>
-        </div>`;
+      m.innerHTML = '<div class="admin-login-box">'
+        + '<h3 class="admin-login-title">Acesso Restrito</h3>'
+        + '<p class="admin-login-sub">Entre com suas credenciais de administrador.</p>'
+        + '<input type="email" id="adm-email" class="admin-login-input" placeholder="E-mail">'
+        + '<input type="password" id="adm-pw" class="admin-login-input" placeholder="Senha">'
+        + '<div id="adm-error" class="admin-login-error"></div>'
+        + '<button class="admin-login-btn" onclick="doAdminLogin()">Entrar</button>'
+        + '<button class="admin-login-cancel" onclick="closeAdminLogin()">Cancelar</button>'
+        + '</div>';
       document.body.appendChild(m);
     }
     m.style.display = 'flex';
     document.getElementById('adm-email').focus();
   }
+
   function closeAdminLogin(){
-    const m = document.getElementById('admin-login-modal');
+    var m = document.getElementById('admin-login-modal');
     if(m) m.remove();
   }
+
   async function doAdminLogin(){
-    const email = document.getElementById('adm-email').value.trim();
-    const pw    = document.getElementById('adm-pw').value;
-    const err   = document.getElementById('adm-error');
-    const btn   = document.querySelector('.admin-login-btn');
+    var email = document.getElementById('adm-email').value.trim();
+    var pw    = document.getElementById('adm-pw').value;
+    var err   = document.getElementById('adm-error');
+    var btn   = document.querySelector('.admin-login-btn');
     err.textContent = '';
     if(!email || !pw){ err.textContent = 'Preencha e-mail e senha.'; return; }
     btn.textContent = 'Entrando...';
     btn.disabled = true;
-       try{
+    var ok = false;
+    try{
       await firebase.auth().signInWithEmailAndPassword(email, pw);
-      closeAdminLogin();
-      _showAdminSheet();
+      ok = true;
     }catch(e){
       err.textContent = 'E-mail ou senha incorretos.';
       btn.textContent = 'Entrar';
       btn.disabled = false;
     }
+    if(ok){
+      closeAdminLogin();
+      _showAdminSheet();
+    }
   }
+
   function _showAdminSheet(){
     document.getElementById('overlay').classList.add('active');
     document.getElementById('admin-sheet').classList.add('open');
-    renderAdminList();
+    try{ renderAdminList(); }catch(e){}
   }
+
   function adminLogout(){
     firebase.auth().signOut();
     closeAllSheets();
