@@ -401,7 +401,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
   firebase.initializeApp({
-    apiKey: "AIzaSyBSJdLZ131tPNPqPg5W2gO8wq_EijN2x7E",
+    apiKey: "AIzaSyBS•••••••••••••••••••••••••••••••",
     authDomain: "minuto-sagrado-26867.firebaseapp.com",
     projectId: "minuto-sagrado-26867",
     storageBucket: "minuto-sagrado-26867.firebasestorage.app",
@@ -436,7 +436,7 @@
   }
   function closeAdminLogin(){
     const m = document.getElementById('admin-login-modal');
-    if(m) m.style.display = 'none';
+    if(m) m.remove();
   }
   async function doAdminLogin(){
     const email = document.getElementById('adm-email').value.trim();
@@ -464,11 +464,9 @@
     }
   }
   function _showAdminSheet(){
-  document.getElementById('overlay').classList.add('active');
-  document.getElementById('admin-sheet').classList.add('open');
-  renderAdminList();
-}
-}
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('admin-sheet').classList.add('open');
+    renderAdminList();
   }
   function adminLogout(){
     firebase.auth().signOut();
