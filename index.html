@@ -447,18 +447,12 @@
     if(!email || !pw){ err.textContent = 'Preencha e-mail e senha.'; return; }
     btn.textContent = 'Entrando...';
     btn.disabled = true;
-    try{
+       try{
       await firebase.auth().signInWithEmailAndPassword(email, pw);
-      const m = document.getElementById('admin-login-modal');
-      if(m) m.remove();
-      document.getElementById('overlay').classList.remove('active');
-      setTimeout(function(){
-        document.getElementById('overlay').classList.add('active');
-        document.getElementById('admin-sheet').classList.add('open');
-        renderAdminList();
-      }, 150);
+      closeAdminLogin();
+      _showAdminSheet();
     }catch(e){
-        err.textContent = 'Erro: ' + (e.code || e.message);
+      err.textContent = 'E-mail ou senha incorretos.';
       btn.textContent = 'Entrar';
       btn.disabled = false;
     }
