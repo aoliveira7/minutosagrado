@@ -458,7 +458,7 @@
         renderAdminList();
       }, 150);
     }catch(e){
-      err.textContent = 'E-mail ou senha incorretos.';
+        err.textContent = 'Erro: ' + (e.code || e.message);
       btn.textContent = 'Entrar';
       btn.disabled = false;
     }
